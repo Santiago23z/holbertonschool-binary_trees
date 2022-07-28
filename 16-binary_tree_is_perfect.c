@@ -7,29 +7,12 @@
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-	int right = 0, left = 0;
+	int depth = 0;
 
 	if (tree == NULL)
 		return (0);
-	left = binary_tree_height(tree->left);
-	right = binary_tree_height(tree->right);
-	return ((left == right) && binary_tree_is_full(tree));
-}
-
-/**
- * binary_tree_is_full - checks if a binary tree is full
- * @tree: pointer to the root node of the tree to check
- * Return: 1 if true, 0 if false
- */
-int binary_tree_is_full(const binary_tree_t *tree)
-{
-	if (tree == NULL)
-		return (0);
-	if (tree->left == NULL && tree->right == NULL)
-		return (1);
-	if (tree->left == NULL || tree->right == NULL)
-		return (0);
-	return (binary_tree_is_full(tree->left) && binary_tree_is_full(tree->right));
+	depth = binary_tree_height(tree);
+	return (check_leaves(tree, depth, 0));
 }
 
 /**
@@ -50,4 +33,22 @@ size_t binary_tree_height(const binary_tree_t *tree)
 		return (left + 1);
 	else
 		return (right + 1);
+}
+
+/**
+ * check_leaves - Verify if all leaves are in the same level
+ * @tree: pointer to the root node of the tree to check
+ * @depth: level where the leaves should be are
+ * @level: level of the node
+ * Return: 1 if the leaves are in the same level,
+ * 0 if not
+ */
+int check_leaves(const binary_tree_t *tree, int depth, int level)
+{
+	if (tree->left == NULL && tree->right == NULL)
+		return (depth == level + 1);
+	if (tree->left == NULL || tree->right == NULL)
+		return (0);
+	return (check_leaves(tree->left, depth, level + 1) &&
+			check_leaves(tree->right, depth, level + 1));
 }
